@@ -11,6 +11,11 @@ This repo describes the process of setting up nvim inside a docker invironment a
 3. Update the links to configs in docker file to point to your own config repo
 4. Start your environtment
 5. Ssh into your environtment and install gdb and debugpy
+6. Before running the debugger, we need to add the following to the docker compose service that we want to debug:
+    ```
+    cap_add: 
+        - SYS_PTRACE
+    ```
 6. Attach debugpy to the correct process with this command:
     ```
      python -m debugpy --listen 0.0.0.0:5678 --pid 19 --configure-subProcess False
