@@ -73,3 +73,8 @@ return {
   end,
 }
 ```
+### TODO
+- [ ] Add git support inside container
+- [ ] Allow container to start debugger inside another container
+- [ ] Allow container to start other containers in the system
+
