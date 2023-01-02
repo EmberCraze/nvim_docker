@@ -27,7 +27,7 @@ This repo describes the process of setting up nvim inside a docker invironment a
     ```
 8. Run you docker environment
     ```
-    docker run -it --network=host -v $DISPLAY -v ~/path_to_your_project:/home/dev/you_project_name django_dev_env:latest
+    docker run -it --network=host -e DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/path_to_your_project:/home/dev/you_project_name django_dev_env:latest
     ```
 
 Note: if you want to iterate over your astronvim user config without having to rerun the whole docker file everytime, you can run it with this command to partially invalidate the cache
