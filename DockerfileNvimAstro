@@ -28,9 +28,9 @@ RUN LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygi
     curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz" && \
     tar xf lazygit.tar.gz -C /usr/bin lazygit
 
-RUN BOTTOM_VERSION=$(curl -s "https://api.github.com/repos/ClementTsang/bottom/releases/latest" | grep '"tag_name":' |  sed -E 's/.*"v*([^"]+)".*/\1/') && \
-    curl -Lo  bottom_amd64.deb  "https://github.com/ClementTsang/bottom/releases/download/0.6.8/bottom_${BOTTOM_VERSION}_amd64.deb" && \
+RUN curl -Lo  bottom_amd64.deb  "https://github.com/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb" && \
     apt-get install ./bottom_amd64.deb
+
 
 # Authorize SSH Host
 RUN mkdir -p /root/.ssh && \
