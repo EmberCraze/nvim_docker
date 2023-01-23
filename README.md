@@ -78,3 +78,4 @@ return {
 - [ ] Allow container to start debugger inside another container
 - [ ] Allow container to start other containers in the system
 
+Run `xhost local:root` on host to share clippboard
