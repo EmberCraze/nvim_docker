@@ -4,8 +4,8 @@ services:
     build:
       context: .
       dockerfile: ./DockerfileNvimAstro
-    image: django_dev
-    container_name: django_dev
+    image: nvim_dev
+    container_name: nvim_dev
     privileged: true
     command: ['/bin/bash']
     stdin_open: true
@@ -15,7 +15,7 @@ services:
       - PIP_DEFAULT_TIMEOUT=100
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - ~/gigapay_dev/gigapay:/home/dev/gigapay
+      # - ~/gigapay_dev/gigapay:/home/dev/gigapay
       - /:/host
     network_mode: host
     pid: host
