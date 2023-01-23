@@ -31,7 +31,6 @@ RUN LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygi
 RUN curl -Lo  bottom_amd64.deb  "https://github.com/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb" && \
     apt-get install ./bottom_amd64.deb
 
-
 # Authorize SSH Host
 RUN mkdir -p /root/.ssh && \
     chmod 0700 /root/.ssh && \
@@ -46,13 +45,17 @@ RUN chmod -R 600 /root/.ssh/
 COPY ./requirements /requirements
 RUN pip install -r /requirements/local.txt
 RUN pip install django-stubs==1.13.1 \
-django-stubs-ext==0.7.0
+django-stubs-ext==0.7.0 \
+djangorestframework-stubs==1.8.0
 
 # Set neovim as the default editor
 ENV EDITOR=nvim
 
 WORKDIR /home/dev
 USER dev
+
+RUN git config --global user.email "maher.shaker@live.se"
+RUN git config --global user.name "EmberCraze"
 
 RUN mkdir /home/dev/.config/ && mkdir /home/dev/.config/nvim
 RUN git clone https://github.com/AstroNvim/AstroNvim ~/.config/nvim
@@ -65,14 +68,8 @@ RUN git clone https://github.com/EmberCraze/astrovim_config.git temp
 RUN mv temp/user .
 RUN rm -r temp
 RUN nvim --headless -c "autocmd User PackerComplete quitall"
-RUN nvim --headless -c "autocmd User LspInstall pyright" -c "quitall"
+RUN nvim --headless -c "LspInstall pyright" -c qall
 
-#RUN git clone https://github.com/EmberCraze/nvim.git /home/dev/.config/nvim
-# TODO instead of copying over pre installed values, do the installation in docker so that it becomes cached
-#COPY ./.local .local
-#RUN sudo chown dev -R .local
-#RUN sudo chown dev -R .config
+WORKDIR /home/dev/gigapay
 
-WORKDIR /home/dev/gigapay_dev
-
-CMD ["nvim", "."]
+CMD ["/bin/bash"]

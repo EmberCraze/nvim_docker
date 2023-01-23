@@ -1,0 +1,22 @@
+version: '3'
+services:
+  django_dev:
+    build:
+      context: .
+      dockerfile: ./DockerfileNvimAstro
+    image: django_dev
+    container_name: django_dev
+    privileged: true
+    command: ['/bin/bash']
+    stdin_open: true
+    tty: true
+    environment:
+      - DISPLAY
+      - PIP_DEFAULT_TIMEOUT=100
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ~/gigapay_dev/gigapay:/home/dev/gigapay
+      - /:/host
+    network_mode: host
+    pid: host
+    ipc: host
