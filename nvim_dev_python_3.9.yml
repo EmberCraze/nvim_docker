@@ -1,0 +1,26 @@
+version: '3'
+services:
+  django_dev:
+    build:
+      context: .
+      dockerfile: ./docker_files/DockerfilePython3.9
+      args:
+        - PROJECT=${PROJECT}
+        - FRAMEWORK=${FRAMEWORK}
+    image: nvim_dev_python_3.9
+    container_name: nvim_dev_python_3.9
+    privileged: true
+    command: ['/bin/bash']
+    stdin_open: true
+    tty: true
+    env_file:
+      - ./.env
+    environment:
+      - DISPLAY
+      - PIP_DEFAULT_TIMEOUT=100
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /:/host
+    network_mode: host
+    pid: host
+    ipc: host

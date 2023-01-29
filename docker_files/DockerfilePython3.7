@@ -1,5 +1,8 @@
 FROM python:3.7.16-bullseye
 
+ARG PROJECT=path/to/project
+ARG FRAMEWORK=django
+
 RUN apt-get update && \
     apt-get install -y curl \
     git \
@@ -13,6 +16,12 @@ RUN useradd --create-home --shell /bin/bash --group sudo dev
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
 /etc/sudoers
 
+# Install django specific stuff
+RUN if [ ${FRAMEWORK} -eq "django" ]; then pip install django-stubs==1.13.1 \
+django-stubs-ext==0.7.0 \
+djangorestframework-stubs==1.8.0; fi
+
+#RUN 
 WORKDIR /tmp
 
 # Get upgraded node (This is needed for pyright)
@@ -37,16 +46,13 @@ RUN mkdir -p /root/.ssh && \
     ssh-keyscan github.com > /root/.ssh/known_hosts
 
 # Add the keys and set permissions
-ADD ./certs/ssh /root/.ssh/
-COPY ./compose/local/django/ssh_config /root/.ssh/config
-RUN chmod -R 600 /root/.ssh/
+# ADD ${PROJECT}/certs/ssh /root/.ssh/
+# COPY ${PROJECT}/compose/local/django/ssh_config /root/.ssh/config
+# RUN chmod -R 600 /root/.ssh/
 
 # Requirements are installed here to ensure they will be cached.
-COPY ./requirements /requirements
-RUN pip install -r /requirements/local.txt
-RUN pip install django-stubs==1.13.1 \
-django-stubs-ext==0.7.0 \
-djangorestframework-stubs==1.8.0
+#COPY ./requirements /requirements
+#RUN pip install -r ${PROJECT}/requirements/local.txt
 
 # Set neovim as the default editor
 ENV EDITOR=nvim
@@ -70,6 +76,7 @@ RUN rm -r temp
 RUN nvim --headless -c "autocmd User PackerComplete quitall"
 RUN nvim --headless -c "LspInstall pyright" -c qall
 
-WORKDIR /home/dev/gigapay
+#WORKDIR /home/dev/gigapay
+WORKDIR /host/home/emberman
 
 CMD ["/bin/bash"]
