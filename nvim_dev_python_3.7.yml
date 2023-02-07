@@ -2,8 +2,8 @@ version: '3'
 services:
   django_dev:
     build:
-      context: .
-      dockerfile: ./docker_files/DockerfilePython3.7
+      context: ~/
+      dockerfile: develop/MegaGithubSync/nvim_docker/docker_files/DockerfilePython3.7
       args:
         - PROJECT=${PROJECT}
         - FRAMEWORK=${FRAMEWORK}
