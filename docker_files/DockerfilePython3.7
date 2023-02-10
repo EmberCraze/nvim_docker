@@ -10,14 +10,21 @@ RUN apt-get update && \
     xclip \
     ripgrep \
     sudo \
-    gdu
+    gdu \
+    fish
+
+# install docker
+RUN curl -sSL https://get.docker.com/ | sudo sh
+
+RUN groupadd docker
+RUN usermod -aG docker $USER
 
 RUN useradd --create-home --shell /bin/bash --group sudo dev
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
 /etc/sudoers
 
 # Install django specific stuff
-RUN if [ ${FRAMEWORK} -eq "django" ]; then pip install django-stubs==1.13.1 \
+RUN if [ ${FRAMEWORK} -eq django ]; then pip install django-stubs==1.13.1 \
 django-stubs-ext==0.7.0 \
 djangorestframework-stubs==1.8.0; fi
 
@@ -77,6 +84,7 @@ RUN nvim --headless -c "autocmd User PackerComplete quitall"
 RUN nvim --headless -c "LspInstall pyright" -c qall
 
 #WORKDIR /home/dev/gigapay
-WORKDIR /host/home/emberman
+#WORKDIR /host/home/emberman
+WORKDIR /host
 
 CMD ["/bin/bash"]
