@@ -1,5 +1,10 @@
 # nvim_docker
 
+### TODO
+- [x] Add git support inside container
+- [ ] Allow container to start debugger inside another container
+- [ ] Allow container to start other containers in the system
+
 This repo describes the process of setting up nvim inside a docker invironment and allowing it to have both lsp and debugging capabilities
 
 ### Requirements
@@ -73,9 +78,5 @@ return {
   end,
 }
 ```
-### TODO
-- [ ] Add git support inside container
-- [ ] Allow container to start debugger inside another container
-- [ ] Allow container to start other containers in the system
 
 Run `xhost local:root` on host to share clippboard
