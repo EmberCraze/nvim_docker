@@ -11,17 +11,19 @@ RUN apt-get update && \
     ripgrep \
     sudo \
     gdu \
-    fish
+    fish \
+    keychain
 
 # install docker
 RUN curl -sSL https://get.docker.com/ | sudo sh
 
-RUN groupadd docker
-RUN usermod -aG docker $USER
-
 RUN useradd --create-home --shell /bin/bash --group sudo dev
 RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
 /etc/sudoers
+
+# Add docker to group
+#RUN groupadd docker
+#RUN usermod -aG docker $USER
 
 # Install django specific stuff
 RUN if [ ${FRAMEWORK} -eq django ]; then pip install django-stubs==1.13.1 \
@@ -61,11 +63,20 @@ RUN chmod -R 600 /root/.ssh/
 COPY ${PROJECT}/requirements /requirements
 RUN pip install -r /requirements/local.txt
 
+# Copy personal keys to container
+COPY .ssh/ /home/dev/.ssh
+#RUN chmod -R 666 /home/dev/.ssh/
+RUN sudo chown dev -R /home/dev/.ssh/
+
 # Set neovim as the default editor
 ENV EDITOR=nvim
 
 WORKDIR /home/dev
 USER dev
+
+# Load ssh key into .bashrc
+RUN echo 'eval $(ssh-agent)' >> /home/dev/.bashrc
+RUN echo 'ssh-add ~/.ssh/id_rsa' >> /home/dev/.bashrc
 
 RUN git config --global user.email "maher.shaker@live.se"
 RUN git config --global user.name "EmberCraze"
@@ -83,8 +94,6 @@ RUN rm -r temp
 RUN nvim --headless -c "autocmd User PackerComplete quitall"
 RUN nvim --headless -c "LspInstall pyright" -c qall
 
-#WORKDIR /home/dev/gigapay
-#WORKDIR /host/home/emberman
 WORKDIR /host
 
 CMD ["/bin/bash"]
