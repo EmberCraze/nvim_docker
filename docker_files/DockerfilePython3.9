@@ -17,7 +17,7 @@ RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
 /etc/sudoers
 
 # Install django specific stuff
-RUN if [ ${FRAMEWORK} -eq "django" ]; then pip install django-stubs==1.13.1 \
+RUN if [ ${FRAMEWORK} -eq django ]; then pip install django-stubs==1.13.1 \
 django-stubs-ext==0.7.0 \
 djangorestframework-stubs==1.8.0; fi
 

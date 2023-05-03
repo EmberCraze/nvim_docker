@@ -2,8 +2,8 @@ version: '3'
 services:
   django_dev:
     build:
-      context: .
-      dockerfile: ./docker_files/DockerfilePython3.9
+      context: ~/
+      dockerfile: develop/MegaGithubSync/nvim_docker/docker_files/DockerfilePython3.9
       args:
         - PROJECT=${PROJECT}
         - FRAMEWORK=${FRAMEWORK}
@@ -20,7 +20,8 @@ services:
       - PIP_DEFAULT_TIMEOUT=100
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - /:/host
+      - ~/:/host/home
+      - /var/run/docker.sock:/var/run/docker.sock
     network_mode: host
-    pid: host
-    ipc: host
+    # pid: host
+    # ipc: host
