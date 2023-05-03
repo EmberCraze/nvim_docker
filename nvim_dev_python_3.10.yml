@@ -3,12 +3,12 @@ services:
   django_dev:
     build:
       context: ~/
-      dockerfile: develop/MegaGithubSync/nvim_docker/docker_files/DockerfilePython3.9
+      dockerfile: develop/MegaGithubSync/nvim_docker/docker_files/DockerfilePython3.10
       args:
         - PROJECT=${PROJECT}
         - FRAMEWORK=${FRAMEWORK}
-    image: nvim_dev_python_3.9
-    container_name: nvim_dev_python_3.9
+    image: nvim_dev_python_3.10
+    container_name: nvim_dev_python_3.10
     privileged: true
     command: ['/bin/bash']
     stdin_open: true

@@ -1,0 +1,73 @@
+FROM python:3.10-buster
+
+ARG PROJECT=path/to/project
+ARG FRAMEWORK=django
+
+RUN apt-get update && \
+  apt-get install -y curl \
+  git \
+  gdb \
+  xclip \
+  ripgrep \
+  sudo
+
+# Install django specific stuff
+RUN if [ ${FRAMEWORK} -eq django ]; then pip install django-stubs==1.13.1 \
+django-stubs-ext==0.7.0 \
+djangorestframework-stubs==1.8.0; fi
+
+# Create user
+RUN useradd --create-home --shell /bin/bash --group sudo dev
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> \
+/etc/sudoers
+
+# Switch to user
+USER dev
+
+# Install nix package manager
+RUN sudo curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
+RUN echo 'export PATH="$HOME/.nix-profile/bin/:$PATH"' >> ~/.bashrc
+
+# Installing required packages
+RUN ~/.nix-profile/bin/nix-env -iA nixpkgs.nodejs
+RUN ~/.nix-profile/bin/nix-env -iA nixpkgs.neovim
+RUN ~/.nix-profile/bin/nix-env -iA nixpkgs.lazygit
+RUN ~/.nix-profile/bin/nix-env -iA nixpkgs.bottom
+RUN ~/.nix-profile/bin/nix-env -iA nixpkgs.gdu
+
+USER root
+# Authorize SSH Host
+RUN mkdir -p /root/.ssh && \
+    chmod 0700 /root/.ssh && \
+    ssh-keyscan github.com > /root/.ssh/known_hosts
+
+# Add the keys and set permissions
+# ADD ${PROJECT}/certs/ssh /root/.ssh/
+# COPY ${PROJECT}/compose/local/django/ssh_config /root/.ssh/config
+# RUN chmod -R 600 /root/.ssh/
+
+# Requirements are installed here to ensure they will be cached.
+#COPY ./requirements /requirements
+#RUN pip install -r ${PROJECT}/requirements/local.txt
+
+# Set neovim as the default editor
+ENV EDITOR=nvim
+
+WORKDIR /home/dev
+USER dev
+
+RUN git config --global user.email "maher.shaker@live.se"
+RUN git config --global user.name "EmberCraze"
+
+# Install NvChad
+RUN mkdir /home/dev/.config/
+RUN git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
+RUN git clone https://github.com/EmberCraze/nvchat_config.git ~/.config/nvim/lua/custom --depth 1
+
+RUN nvim --headless "+Lazy! sync" +qa
+RUN nvim --headless -c "MasonInstallAll" -c "qall"
+
+#WORKDIR /home/dev/gigapay
+WORKDIR /host/home/emberman
+
+CMD ["/bin/bash"]
